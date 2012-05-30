@@ -15,7 +15,7 @@ import pprint
 import random
 import sys
 
-logger = logging.getLogger(__name__)
+logging.basicConfig(filename='/tmp/stacktach_server.log')
 
 VERSION = 4
 
@@ -33,7 +33,11 @@ def _monitor_message(routing_key, body):
     publisher = body['publisher_id']
     parts = publisher.split('.')   
     service = parts[0]
-    host = parts[1]
+    if len(parts) > 1:
+        host = ".".join(parts[1:])
+    else:
+        host = None
+    #logging.error("publisher=%s, host=%s" % (publisher, host))
     payload = body['payload']
     request_spec = payload.get('request_spec', None)
     instance = payload.get('instance_id', None)
